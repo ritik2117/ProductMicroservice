@@ -9,5 +9,8 @@ public interface ProductService {
     Product getProductById(Long id);
     List<Product> getAllProducts();
     List<Category> getAllCategories();
+    List<Product> getProductsByCategory(Category category);
+    Product addProduct(Product product);
     Product replaceProduct(Long id, Product product);
+    void deleteProduct(Long id);
 }

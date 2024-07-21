@@ -66,6 +66,22 @@ public class ProductController {
         return responseEntity;
     }
 
+    @GetMapping("/category/{categoryTitle}")
+    public ResponseEntity<List<Product>> getAllProductsByCategory(@PathVariable("categoryTitle") String categoryTitle) {
+        ResponseEntity<List<Product>> responseEntity;
+        List<Product> products = new ArrayList<>();
+        Category category = new Category();
+        category.setTitle(categoryTitle);
+        products = productService.getProductsByCategory(category);
+
+        if (products == null || products.size() == 0) {
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            responseEntity = new ResponseEntity<>(products, HttpStatus.OK);
+        }
+        return responseEntity;
+    }
+
     /**
      * createProduct
      * updateProduct -> Partial Update (PATCH)
@@ -73,8 +89,47 @@ public class ProductController {
      * deleteProduct
      */
 
-    @PutMapping()
-    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product) {
-        return productService.replaceProduct(id, product);
+    @PostMapping()
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        System.out.println("Received product in createProduct: " + product);
+        Product newProduct = productService.addProduct(product);
+        System.out.println("Hello: " + newProduct);
+        if (newProduct == null) {
+            System.out.println("New Product could not be created!!!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            System.out.println("New Product created: " + newProduct);
+            return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> replaceProduct(@PathVariable("id") Long id, @RequestBody Product product) {
+        ResponseEntity<Product> responseEntity;
+        Product updatedProduct = productService.replaceProduct(id, product);
+        System.out.println("After exiting from replaceProduct service.");
+        if (updatedProduct == null) {
+            System.out.println("Product could not be replaced!!!");
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            System.out.println("Product updated: " + updatedProduct);
+            responseEntity = new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        }
+        return responseEntity;
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Product> deleteProduct(@PathVariable("id") Long id) {
+        ResponseEntity<Product> responseEntity;
+        productService.deleteProduct(id);
+
+        /*if (deletedProduct == null) {
+            System.out.println("Product could not be deleted!!!");
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            System.out.println("Product deleted: " + deletedProduct);
+            responseEntity = new ResponseEntity<>(deletedProduct, HttpStatus.OK);
+        }*/
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
