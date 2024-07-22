@@ -1,5 +1,7 @@
 package com.scaler.productmicroservice.controllers;
 
+import com.scaler.productmicroservice.dtos.ExceptionDto;
+import com.scaler.productmicroservice.exceptions.ProductNotFoundException;
 import com.scaler.productmicroservice.models.Category;
 import com.scaler.productmicroservice.models.Product;
 import com.scaler.productmicroservice.services.ProductService;
@@ -9,6 +11,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +29,14 @@ public class ProductController {
 //    localhost:8080/products/1
 //    Changed the return type from Product to ResponseEntity
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
         Product product = productService.getProductById(id);
         ResponseEntity responseEntity;
-        if (product == null) {
+//        Code is commented as we handled this case through ProductNotFoundException in service class
+        /*if (product == null) {
             responseEntity = new ResponseEntity<>(product, HttpStatus.NOT_FOUND);
             return responseEntity;
-        }
+        }*/
         responseEntity = new ResponseEntity<>(product, HttpStatus.OK);
         return responseEntity;
     }
@@ -131,5 +136,15 @@ public class ProductController {
             responseEntity = new ResponseEntity<>(deletedProduct, HttpStatus.OK);
         }*/
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+//    Handling Exception Handler at Controller Level, more priority over Global Exception Handler
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<ExceptionDto> handleFileNotFoundExceptionAtControllerLevel() {
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setMessage("File not found");
+        exceptionDto.setResolution("Enter the correct file name");
+        ResponseEntity<ExceptionDto> responseEntity = new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
+        return responseEntity;
     }
 }
