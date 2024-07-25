@@ -6,6 +6,7 @@ import com.scaler.productmicroservice.models.Category;
 import com.scaler.productmicroservice.models.Product;
 import com.scaler.productmicroservice.services.ProductService;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ProductController {
 
     private ProductService productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(@Qualifier(value = "selfProductService") ProductService productService) {
         this.productService = productService;
     }
 //    localhost:8080/products/1
@@ -95,7 +96,7 @@ public class ProductController {
      */
 
     @PostMapping()
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) { // Can also use ProductDto
         System.out.println("Received product in createProduct: " + product);
         Product newProduct = productService.addProduct(product);
         System.out.println("Hello: " + newProduct);
