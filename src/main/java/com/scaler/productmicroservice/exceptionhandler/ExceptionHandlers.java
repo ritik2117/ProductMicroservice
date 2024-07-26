@@ -1,7 +1,9 @@
 package com.scaler.productmicroservice.exceptionhandler;
 
+import com.scaler.productmicroservice.dtos.CategoryNotFoundExceptionDto;
 import com.scaler.productmicroservice.dtos.ExceptionDto;
 import com.scaler.productmicroservice.dtos.ProductNotFoundExceptionDto;
+import com.scaler.productmicroservice.exceptions.CategoryNotFoundException;
 import com.scaler.productmicroservice.exceptions.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -35,6 +37,16 @@ public class ExceptionHandlers {
         productNotFoundExceptionDto.setId(productNotFoundException.getId());
         productNotFoundExceptionDto.setMessage("Product with the given id " + productNotFoundException.getId() + " is not found");
         ResponseEntity<ProductNotFoundExceptionDto> responseEntity = new ResponseEntity<>(productNotFoundExceptionDto, HttpStatus.NOT_FOUND);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<CategoryNotFoundExceptionDto> handleCategoryNotFoundException(CategoryNotFoundException categoryNotFoundException) {
+        System.out.println("Encounter CategoryNotFoundException");
+        CategoryNotFoundExceptionDto categoryNotFoundExceptionDto = new CategoryNotFoundExceptionDto();
+        categoryNotFoundExceptionDto.setId(categoryNotFoundException.getId());
+        categoryNotFoundExceptionDto.setMessage(categoryNotFoundException.getMessage());
+        ResponseEntity<CategoryNotFoundExceptionDto> responseEntity = new ResponseEntity<>(categoryNotFoundExceptionDto, HttpStatus.NOT_FOUND);
         return responseEntity;
     }
 }

@@ -1,6 +1,7 @@
 package com.scaler.productmicroservice.controllers;
 
 import com.scaler.productmicroservice.dtos.ExceptionDto;
+import com.scaler.productmicroservice.exceptions.CategoryNotFoundException;
 import com.scaler.productmicroservice.exceptions.ProductNotFoundException;
 import com.scaler.productmicroservice.models.Category;
 import com.scaler.productmicroservice.models.Product;
@@ -96,7 +97,7 @@ public class ProductController {
      */
 
     @PostMapping()
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) { // Can also use ProductDto
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) throws CategoryNotFoundException { // Can also use ProductDto
         System.out.println("Received product in createProduct: " + product);
         Product newProduct = productService.addProduct(product);
         System.out.println("Hello: " + newProduct);
