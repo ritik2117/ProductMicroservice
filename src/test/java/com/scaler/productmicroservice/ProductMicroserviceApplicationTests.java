@@ -6,14 +6,14 @@ import com.scaler.productmicroservice.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-@AllArgsConstructor
 class ProductMicroserviceApplicationTests {
 
+    @Autowired
 	private ProductRepository productRepository;
-	private CategoryRepository categoryRepository;
 
 	@Test
 	void contextLoads() {
@@ -23,5 +23,12 @@ class ProductMicroserviceApplicationTests {
 	@Transactional
 	public void testTC() {
 		ProductWithTitleAndDescription product = productRepository.getTitleAndDescription(2L);
+        System.out.println(product.getTitle());
+        System.out.println(product.getDescription());
+		System.out.println(product.getCreatedAt());
+
+        ProductWithTitleAndDescription productSQL = productRepository.getTitleAndDescriptionWithSQL(2L);
+        System.out.println(productSQL.getTitle());
+        System.out.println(productSQL.getDescription());
 	}
 }

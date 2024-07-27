@@ -15,12 +15,14 @@ public class SelfCategoryService implements CategoryService {
     CategoryRepository categoryRepository;
     @Override
     public Category addCategory(Category category) {
+        System.out.println("Entering addCategory method");
         Category newCategory = categoryRepository.save(category);
         return newCategory;
     }
 
     @Override
     public Category validateCategory(Category category) throws CategoryNotFoundException {
+        System.out.println("Entering validateCategory");
         if (category == null) {
 //            Throw exception
             throw new CategoryNotFoundException("Category is not sent in the input! Please check!");

@@ -54,8 +54,10 @@ public class SelfProductService implements ProductService {
         } else {
 //            we should check if the category id is valid or not.
         }*/
-        category = categoryService.validateCategory(category);
-        product.setCategory(category);
+//        Implemented cascade type in product
+//        category = categoryService.validateCategory(category);
+//        product.setCategory(category);
+        System.out.println("Category before saving the product: " + category);
         return productRepository.save(product);
     }
 

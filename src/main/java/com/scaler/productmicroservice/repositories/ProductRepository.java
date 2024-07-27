@@ -13,6 +13,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product save(Product product);
 
 //    HQL
-    @Query("select p.title, p.description from Product p where p.id = :id")
+    @Query("select p.title AS title, p.description AS description, p.createdAt AS createdAt from Product p where p.id = :id")
     ProductWithTitleAndDescription getTitleAndDescription(@Param("id") Long id);
+
+//    SQL
+    @Query(value = "SELECT p.title, p.description FROM product p WHERE p.id = :id", nativeQuery = true)
+    ProductWithTitleAndDescription getTitleAndDescriptionWithSQL(@Param("id") Long id);
 }
