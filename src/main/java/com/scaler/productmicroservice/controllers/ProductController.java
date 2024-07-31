@@ -55,6 +55,7 @@ public class ProductController {
             responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             return responseEntity;
         }
+
         responseEntity = new ResponseEntity<>(products, HttpStatus.OK);
         return responseEntity;
     }
