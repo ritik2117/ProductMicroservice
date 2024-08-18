@@ -1,19 +1,19 @@
 package com.scaler.productmicroservice.controllers;
 
+import com.scaler.productmicroservice.commons.AuthCommons;
 import com.scaler.productmicroservice.dtos.ExceptionDto;
+import com.scaler.productmicroservice.dtos.UserDto;
 import com.scaler.productmicroservice.exceptions.CategoryNotFoundException;
 import com.scaler.productmicroservice.exceptions.ProductNotFoundException;
 import com.scaler.productmicroservice.models.Category;
 import com.scaler.productmicroservice.models.Product;
 import com.scaler.productmicroservice.services.ProductService;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +24,39 @@ import java.util.List;
 public class ProductController {
 
     private ProductService productService;
+    private AuthCommons authCommons;
 
-    public ProductController(@Qualifier(value = "selfProductService") ProductService productService) {
+    public ProductController(@Qualifier(value = "selfProductService") ProductService productService, AuthCommons authCommons) {
         this.productService = productService;
+        this.authCommons = authCommons;
     }
 //    localhost:8080/products/1
 //    Changed the return type from Product to ResponseEntity
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
-        Product product = productService.getProductById(id);
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id, @RequestHeader(name = "authToken") String tokenValue) throws ProductNotFoundException {
+        /**
+         * The code of validateToken could be used at multiple places,
+         * so moved the code in separate package -> commons -> AuthCommons class
+         */
         ResponseEntity responseEntity;
+//        Call UserService ValidateToken API to validate the token.
+        UserDto userDto = authCommons.validateToken(tokenValue);
+//        ResponseEntity<UserDto> responseEntityValidateToken = restTemplate.getForEntity("http://localhost:8080/users/validate/" + tokenValue, UserDto.class);
+        /*if (responseEntityValidateToken.getBody() == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }*/
+//        RBAC -> Role Based Access
+        /*for (Role role : responseEntityValidateToken.getBody().getRoles()) {
+            if ("ADMIN".equals(role.getValue())) {
+//                Provide access
+            }
+        }*/
+        if (userDto == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        System.out.println("Got the request in Product Service");
+        Product product = productService.getProductById(id);
+
 //        Code is commented as we handled this case through ProductNotFoundException in service class
         /*if (product == null) {
             responseEntity = new ResponseEntity<>(product, HttpStatus.NOT_FOUND);

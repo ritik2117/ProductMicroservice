@@ -4,7 +4,6 @@ import com.scaler.productmicroservice.exceptions.CategoryNotFoundException;
 import com.scaler.productmicroservice.exceptions.ProductNotFoundException;
 import com.scaler.productmicroservice.models.Category;
 import com.scaler.productmicroservice.models.Product;
-import com.scaler.productmicroservice.repositories.CategoryRepository;
 import com.scaler.productmicroservice.repositories.ProductRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
