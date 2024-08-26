@@ -32,15 +32,26 @@ public class ProductController {
     }
 //    localhost:8080/products/1
 //    Changed the return type from Product to ResponseEntity
+
+    /**
+     * @RequestHeader(name = "authToken") String tokenValue is commneted as we have configured ProductMicroservice as a Resource Server
+     * in application.properties file.
+     * When using Spring Boot, configuring an application as a resource server consists of two basic steps.
+     * First, include the needed dependencies and second, indicate the location of the authorization server.
+     * spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8081 -> This is the URL of the Authorization Server
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id, @RequestHeader(name = "authToken") String tokenValue) throws ProductNotFoundException {
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id, /*@RequestHeader(name = "authToken") String tokenValue*/) throws ProductNotFoundException {
         /**
          * The code of validateToken could be used at multiple places,
          * so moved the code in separate package -> commons -> AuthCommons class
          */
         ResponseEntity responseEntity;
 //        Call UserService ValidateToken API to validate the token.
-        UserDto userDto = authCommons.validateToken(tokenValue);
+//        UserDto userDto = authCommons.validateToken(tokenValue);
+        /**
+         * No need to explicitly call the UserService ValidateToken API as we have configured the ProductMicroservice as a Resource Server
+         */
 //        ResponseEntity<UserDto> responseEntityValidateToken = restTemplate.getForEntity("http://localhost:8080/users/validate/" + tokenValue, UserDto.class);
         /*if (responseEntityValidateToken.getBody() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -51,9 +62,9 @@ public class ProductController {
 //                Provide access
             }
         }*/
-        if (userDto == null) {
+        /*if (userDto == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        }*/
         System.out.println("Got the request in Product Service");
         Product product = productService.getProductById(id);
 
