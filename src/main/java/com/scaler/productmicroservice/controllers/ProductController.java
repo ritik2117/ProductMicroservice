@@ -41,7 +41,7 @@ public class ProductController {
      * spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8081 -> This is the URL of the Authorization Server
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id, /*@RequestHeader(name = "authToken") String tokenValue*/) throws ProductNotFoundException {
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id /*@RequestHeader(name = "authToken") String tokenValue*/) throws ProductNotFoundException {
         /**
          * The code of validateToken could be used at multiple places,
          * so moved the code in separate package -> commons -> AuthCommons class
